@@ -1,30 +1,34 @@
 import Page from './page.js';
 
-/**
- * sub page containing specific selectors and methods for a specific page
- */
 class MainPage extends Page {
-    /**
-     * define selectors using getter methods
-     */
+
     get wordleBoard () {
-        const container = $$('div.row')
-        return container
+        return $$('div[class="row"]')
     }
 
-    get inputPassword () {
-        return $('#password');
+    get modalMessage() {
+        return $('div[class="modal"]')
+    }
+    
+    get headingModal() {
+        return $('.modal h1')
     }
 
-    get btnSubmit () {
-        return $('button[type="submit"]');
+    async modalIsDisplayed() {
+        await browser.waitUntil(async function () {
+            this.headingModal.isDisplayed()
+        }, {
+            timeout: 5000,
+            timeoutMsg: 'Modal was not displayed after 5s.'
+        });
     }
 
     async insertWord(word) {
         var inputs = word.split('')
-        await inputs.forEach(input => {
-            browser.pause(2000)
+        await inputs.forEach((input) => {
+            this.pauseBrowser()
             this.insertInput(input)
+            this.pauseBrowser()
         });
     }
 
@@ -33,25 +37,18 @@ class MainPage extends Page {
     }
 
     async hitEnter() {
-        await browser.keys("\uE007")
+        await browser.keys("\uE006")
+        await this.pauseBrowser()
     }
 
-    async login (username, password) {
-        await this.inputUsername.setValue(username);
-        await this.inputPassword.setValue(password);
-        await this.btnSubmit.click();
+    async open (parameters) {
+        return await super.open(parameters);
     }
 
-    /**
-     * overwrite specific options to adapt it to page object
-     */
-    open () {
-        return super.open('');
+    async pauseBrowser() {
+        await browser.pause(50000)
     }
 
-    openSettingNewWord(word) {
-        return super.open(`?test=${word}`)
-    }
 }
 
 export default new MainPage();
