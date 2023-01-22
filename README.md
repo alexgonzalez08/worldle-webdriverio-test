@@ -1,2 +1,2 @@
 # worldle-webdriverio-test
-Test fir wordle using webdriver io
+Test for wordle using webdriver io
